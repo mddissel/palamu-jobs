@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palamu Jobs Portal - पलामू का नंबर 1 जॉब पोर्टल</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
+        body { background: #f5f5f5; }
+        
+        .marquee { background: #d32f2f; color: white; padding: 8px 0; font-weight: bold; overflow: hidden; }
+        .marquee p { animation: scroll 20s linear infinite; white-space: nowrap; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        
+        .header { background: linear-gradient(135deg, #1a237e, #3949ab); color: white; padding: 20px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header h2 { font-size: 24px; margin-bottom: 5px; }
+        
+        .whatsapp-group { background: #25d366; text-align: center; padding: 12px; }
+        .whatsapp-group a { color: white; text-decoration: none; font-weight: bold; font-size: 16px; }
+        
+        /* JAC मेनू */
+        .jac-menu { background: #ff6f00; padding: 0; }
+        .jac-menu ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+        .jac-menu li { position: relative; }
+        .jac-menu > ul > li > a { display: block; color: white; padding: 14px 20px; text-decoration: none; font-weight: bold; font-size: 15px; }
+        .jac-menu > ul > li > a:hover { background: #e65100; }
+        .dropdown { display: none; position: absolute; background: white; min-width: 220px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 10; }
+        .dropdown a { display: block; color: #333; padding: 12px 16px; text-decoration: none; border-bottom: 1px solid #eee; }
+        .dropdown a:hover { background: #f5f5f5; color: #ff6f00; }
+        .jac-menu li:hover .dropdown { display: block; }
+        
+        .search-box { max-width: 900px; margin: 15px auto; padding: 0 15px; }
+        .search-box input { width: 100%; padding: 12px; border: 2px solid #1a237e; border-radius: 8px; font-size: 16px; }
+        
+        .tabs { max-width: 900px; margin: 20px auto 0; padding: 0 15px; display: flex; gap: 10px; }
+        .tab-btn { flex: 1; padding: 14px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px 8px 0 0; background: #e0e0e0; color: #333; }
+        .tab-btn.active { background: #1a237e; color: white; }
+        .tab-count { background: #d32f2f; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px; }
+        
+        .container { max-width: 900px; margin: 0 auto 20px; padding: 15px; background: white; border-radius: 0 0 10px 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); min-height: 400px; }
+        .job-card { background: #f9f9f9; padding: 18px; margin: 15px 0; border-radius: 10px; border-left: 4px solid #1a237e; display: flex; gap: 15px; }
+        .job-card.govt { border-left: 4px solid #d32f2f; }
+        .job-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #eee; }
+        .job-content { flex: 1; }
+        .job-title { font-size: 19px; font-weight: 700; color: #1a237e; margin-bottom: 8px; }
+        .job-details { color: #444; margin: 6px 0; font-size: 15px; }
+        .job-details span { color: #d32f2f; font-weight: 600; }
+        .time-ago { color: #666; font-size: 13px; margin-top: 8px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 8px; }
+        .badge-govt { background: #d32f2f; color: white; }
+        .badge-private { background: #1976d2; color: white; }
+        
+        .btn-group { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .btn { padding: 9px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; }
+        .btn:hover { transform: translateY(-1px); }
+        .apply { background: #2e7d32; color: white; }
+        .link { background: #1976d2; color: white; }
+        .whatsapp { background: #25d366; color: white; }
+        .edit { background: #ff6f00; color: white; }
+        .delete { background: #c62828; color: white; }
+        
+        .fab { position: fixed; bottom: 25px; right: 25px; background: #d32f2f; color: white; width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: none; }
+        .login-btn { position: fixed; top: 15px; right: 15px; background: #ff6f00; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; z-index: 100; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; }
+        .modal-content { background: white; margin: 3% auto; padding: 25px; width: 90%; max-width: 550px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+        .modal input, .modal select, .modal textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 15px; }
+        .modal input:focus { border-color: #1a237e; outline: none; }
+        .modal button { width: 100%; padding: 14px; background: #1a237e; color: white; border: none; border-radius: 6px; margin-top: 12px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .close { float: right; font-size: 32px; cursor: pointer; color: #666; }
+        .label { font-weight: 600; color: #333; margin-top: 10px; display: block; }
+        .preview-img { max-width: 100px; margin-top: 10px; border-radius: 6px; display: none; }
+        
+        /* JAC सेक्शन */
+        .jac-section { background: #fff3e0; padding: 20px; margin: 20px 0; border-radius: 10px; border-left: 4px solid #ff6f00; display: none; }
+        .jac-section h3 { color: #e65100; margin-bottom: 15px; }
+        .jac-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+        .jac-links a { background: white; padding: 12px; border-radius: 6px; text-decoration: none; color: #333; border: 1px solid #ffcc80; text-align: center; font-weight: 600; }
+        .jac-links a:hover { background: #ff6f00; color: white; }
+    </style>
+</head>
+<body>
+    <div class="marquee">
+        <p>🔥 पलामू की सभी सरकारी और प्राइवेट नौकरी अब एक ही साइट पर | Palamu Jobs Portal - 100% Free | रोजाना नई नौकरी की जानकारी 🔥</p>
+    </div>
+
+    <button class="login-btn" onclick="adminLogin()" id="loginBtn">🔐 Admin Login</button>
+
+    <div class="header">
+        <h2>🚀 Palamu Jobs Portal</h2>
+        <p>पलामू जिले की सभी Latest नौकरी, रिजल्ट, एडमिट कार्ड</p>
+    </div>
+
+    <div class="whatsapp-group">
+        <a href="https://chat.whatsapp.com/PASTE_YOUR_GROUP_LINK" target="_blank">📲 हमारे WhatsApp ग्रुप से जुड़ें - रोजाना Job Alert पाएं</a>
+    </div>
+
+    <!-- JAC मेनू -->
+    <nav class="jac-menu">
+        <ul>
+            <li><a href="#" onclick="showJacSection('home')">🏠 Home</a></li>
+            <li>
+                <a href="#">📋 JAC Board ▼</a>
+                <div class="dropdown">
+                    <a href="#" onclick="showJacSection('admitcard')">🎫 Admit Card</a>
+                    <a href="#" onclick="showJacSection('result')">📊 Result</a>
+                    <a href="#" onclick="showJacSection('ebooks')">📚 E-Books</a>
+                    <a href="#" onclick="showJacSection('class8')">📖 Class 8th</a>
+                    <a href="#" onclick="showJacSection('class9')">📖 Class 9th</a>
+                    <a href="#" onclick="showJacSection('class10')">📖 Class 10th</a>
+                    <a href="#" onclick="showJacSection('class11')">📖 Class 11th</a>
+                    <a href="#" onclick="showJacSection('class12')">📖 Class 12th</a>
+                </div>
+            </li>
+            <li><a href="#" onclick="switchTab('govt')">🏛️ सरकारी नौकरी</a></li>
+            <li><a href="#" onclick="switchTab('private')">🏢 प्राइवेट नौकरी</a></li>
+        </ul>
+    </nav>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 नौकरी सर्च करें... Ex: Driver, Clerk, 10th Pass" onkeyup="searchJobs()">
+    </div>
+
+    <!-- JAC सेक्शन - Admit Card -->
+    <div class="container jac-section" id="jac-admitcard">
+        <h3>🎫 JAC Admit Card 2024</h3>
+        <div class="jac-links">
+            <a href="https://jac.jharkhand.gov.in" target="_blank">JAC Official Website</a>
+            <a href="https://jac.jharkhand.gov.in/jac/" target="_blank">Class 10th Admit Card</a>
+            <a href="https://jac.jharkhand.gov.in/jac/" target="_blank">Class 12th Admit Card</a>
+            <a href="https://jac.jharkhand.gov.in/jac/" target="_blank">Class 8th Admit Card</a>
+        </div>
+    </div>
+
+    <!-- JAC सेक्शन - Result -->
+    <div class="container jac-section" id="jac-result">
+        <h3>📊 JAC Result 2024</h3>
+        <div class="jac-links">
+            <a href="https://jacresults.com" target="_blank">JAC Result Portal</a>
+            <a href="https://jacresults.com" target="_blank">Class 10th Result</a>
+            <a href="https://jacresults.com" target="_blank">Class 12th Result</a>
+            <a href="https://jacresults.com" target="_blank">Class 8th Result</a>
+        </div>
+    </div>
+
+    <!-- JAC सेक्शन - E-Books -->
+    <div class="container jac-section" id="jac-ebooks">
+        <h3>📚 JAC E-Books - फ्री डाउनलोड करें</h3>
+        <div class="jac-links">
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 6th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 7th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 8th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 9th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 10th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 11th Books</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">📖 Class 12th Books</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">📚 JCERT Official Books</a>
+        </div>
+    </div>
+
+    <!-- JAC सेक्शन - Class Wise -->
+    <div class="container jac-section" id="jac-class8">
+        <h3>📚 JAC Class 8th</h3>
+        <div class="jac-links">
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Model Paper</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">E-Books</a>
+            <a href="https://jacresults.com" target="_blank">Result</a>
+        </div>
+    </div>
+
+    <div class="container jac-section" id="jac-class9">
+        <h3>📚 JAC Class 9th</h3>
+        <div class="jac-links">
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Model Paper</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">E-Books</a>
+            <a href="https://jac.jharkhand.gov.in" target="_blank">Time Table</a>
+        </div>
+    </div>
+
+    <div class="container jac-section" id="jac-class10">
+        <h3>📚 JAC Class 10th Matric</h3>
+        <div class="jac-links">
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Model Paper</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">NCERT Books</a>
+            <a href="https://jacresults.com" target="_blank">Result 2024</a>
+        </div>
+    </div>
+
+    <div class="container jac-section" id="jac-class11">
+        <h3>📚 JAC Class 11th</h3>
+        <div class="jac-links">
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Arts Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Science Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Commerce Syllabus</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">NCERT Books</a>
+        </div>
+    </div>
+
+    <div class="container jac-section" id="jac-class12">
+        <h3>📚 JAC Class 12th Inter</h3>
+        <div class="jac-links">
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Arts Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Science Syllabus</a>
+            <a href="https://jcert.jharkhand.gov.in" target="_blank">Commerce Syllabus</a>
+            <a href="https://ncert.nic.in/textbook.php" target="_blank">NCERT Books</a>
+            <a href="https://jacresults.com" target="_blank">Result 2024</a>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('all')">📋 सभी नौकरी <span class="tab-count" id="countAll">0</span></button>
+        <button class="tab-btn" onclick="switchTab('govt')">🏛️ सरकारी नौकरी <span class="tab-count" id="countGovt">0</span></button>
+        <button class="tab-btn" onclick="switchTab('private')">🏢 प्राइवेट नौकरी <span class="tab-count" id="countPrivate">0</span></button>
+    </div>
+
+    <div class="container" id="jobsList">
+        <p style="text-align:center; padding: 40px;">Loading नौकरियां...</p>
+    </div>
+    
+    <button class="fab" id="addBtn" onclick="openModal()">+</button>
+
+    <!-- Add/Edit Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">नई नौकरी पोस्ट करें</h3>
+            
+            <label class="label">कंपनी Logo/Photo URL</label>
+            <input type="url" id="jobImage" placeholder="https://example.com/logo.png" oninput="previewImage()">
+            <img id="imgPreview" class="preview-img">
+            
+            <label class="label">नौकरी का नाम *</label>
+            <input type="text" id="jobTitle" placeholder="Ex: Computer Operator, Clerk, Driver">
+            
+            <label class="label">कंपनी/विभाग का नाम *</label>
+            <input type="text" id="company" placeholder="Ex: जिला कोर्ट पलामू, HDFC Bank">
+            
+            <label class="label">लोकेशन</label>
+            <input type="text" id="location" placeholder="Ex: Medininagar, Daltonganj">
+            
+            <label class="label">सैलरी</label>
+            <input type="text" id="salary" placeholder="Ex: ₹12000-15000 या Not Disclosed">
+            
+            <label class="label">नौकरी का प्रकार *</label>
+            <select id="jobType">
+                <option value="Govt Job">🏛️ Govt Job - सरकारी नौकरी</option>
+                <option value="Private Job">🏢 Private Job - प्राइवेट नौकरी</option>
+                <option value="10th Pass">📚 10th Pass</option>
+                <option value="12th Pass">📚 12th Pass</option>
+                <option value="Graduate">🎓 Graduate</option>
+            </select>
+            
+            <label class="label">WhatsApp नंबर</label>
+            <input type="text" id="contact" placeholder="10 अंक का मोबाइल नंबर">
+            
+            <label class="label">Apply Link (Optional)</label>
+            <input type="url" id="jobLink" placeholder="https://example.com/apply">
+            
+            <input type="hidden" id="editId">
+            <button onclick="saveJob()">पोस्ट करें</button>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyAJe0myUAUGpgyvGWxKtw_5jMMGODBcKww",
+  authDomain: "palamu-job.firebaseapp.com",
+  projectId: "palamu-job",
+  storageBucket: "palamu-job.firebasestorage.app",
+  messagingSenderId: "403985783195",
+  appId: "1:403985783195:web:6289357cbf50f8b4e1693e"
+};
+
+    const ADMIN_PASSWORD = "Palamu@2024";
+    const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/PASTE_YOUR_GROUP_LINK";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let allJobs = [];
+    let currentTab = 'all';
+    let isAdmin = false;
+
+    document.querySelector('.whatsapp-group a').href = WHATSAPP_GROUP_LINK;
+
+    function timeAgo(timestamp) {
+        const now = Date.now();
+        const diff = now - timestamp;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+        if (minutes < 1) return "अभी अभी";
+        if (minutes < 60) return `${minutes} मिनट पहले`;
+        if (hours < 24) return `${hours} घंटे पहले`;
+        return `${days} दिन पहले`;
+    }
+
+    function updateCounts() {
+        const govtCount = allJobs.filter(j => j.data.jobType === 'Govt Job').length;
+        const privateCount = allJobs.filter(j => j.data.jobType === 'Private Job').length;
+        document.getElementById('countAll').innerText = allJobs.length;
+        document.getElementById('countGovt').innerText = govtCount;
+        document.getElementById('countPrivate').innerText = privateCount;
+    }
+
+    function renderJobs(jobs) {
+        let html = "";
+        jobs.forEach((item) => {
+            const job = item.data;
+            const id = item.id;
+            const isGovt = job.jobType === 'Govt Job';
+            const linkBtn = job.jobLink ? `<button class="btn link" onclick="window.open('${job.jobLink}', '_blank')">🔗 Direct Link</button>` : '';
+            const adminBtns = isAdmin ? `
+                <button class="btn edit" onclick="editJob('${id}')">✏️ Edit</button>
+                <button class="btn delete" onclick="deleteJob('${id}')">🗑️ Delete</button>
+            ` : '';
+            const imgTag = job.image ? `<img src="${job.image}" class="job-img" onerror="this.style.display='none'">` : '';
+            const badge = isGovt ? `<span class="badge badge-govt">सरकारी</span>` : `<span class="badge badge-private">प्राइवेट</span>`;
+            
+            html += `
+            <div class="job-card ${isGovt ? 'govt' : ''}">
+                ${imgTag}
+                <div class="job-content">
+                    <div class="job-title">${job.title} ${badge}</div>
+                    <div class="job-details">🏢 <span>${job.company}</span></div>
+                    <div class="job-details">📍 ${job.location} | 💰 ${job.salary}</div>
+                    <div class="time-ago">⏰ ${timeAgo(job.time)}</div>
+                    <div class="btn-group">
+                        <button class="btn apply" onclick="window.open('https://wa.me/91${job.contact}?text=नमस्ते, मैं ${job.title} के लिए Apply करना चाहता हूँ।', '_blank')">📱 Apply करें</button>
+                        ${linkBtn}
+                        <button class="btn whatsapp" onclick="shareWhatsApp('${job.title}', '${job.company}', '${job.location}', '${job.salary}')">📲 Share</button>
+                        ${adminBtns}
+                    </div>
+                </div>
+            </div>`;
+        });
+        document.getElementById('jobsList').innerHTML = html || "<div style='text-align:center; padding:40px;'><h3>इस कैटेगरी में कोई नौकरी नहीं मिली</h3></div>";
+    }
+
+    window.showJacSection = (section) => {
+        document.querySelectorAll('.jac-section').forEach(s => s.style.display = 'none');
+        document.getElementById('jobsList').style.display = 'none';
+        document.querySelector('.tabs').style.display = 'none';
+        if(section === 'home') {
+            document.getElementById('jobsList').style.display = 'block';
+            document.querySelector('.tabs').style.display = 'flex';
+            switchTab('all');
+        } else {
+            document.getElementById('jac-' + section).style.display = 'block';
+        }
+    }
+
+    window.switchTab = (tab) => {
+        currentTab = tab;
+        document.querySelectorAll('.jac-section').forEach(s => s.style.display = 'none');
+        document.getElementById('jobsList').style.display = 'block';
+        document.querySelector('.tabs').style.display = 'flex';
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        let filtered = allJobs;
+        if(tab === 'govt') filtered = allJobs.filter(j => j.data.jobType === 'Govt Job');
+        if(tab === 'private') filtered = allJobs.filter(j => j.data.jobType === 'Private Job');
+        
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        if(searchText) {
+            filtered = filtered.filter(item => 
+                item.data.title.toLowerCase().includes(searchText) || 
+                item.data.company.toLowerCase().includes(searchText) ||
+                item.data.location.toLowerCase().includes(searchText)
+            );
+        }
+        renderJobs(filtered);
+    }
+
+    async function loadJobs() {
+        const q = query(collection(db, "jobs"), orderBy("time", "desc"));
+        const querySnapshot = await getDocs(q);
+        allJobs = [];
+        querySnapshot.forEach((docSnap) => {
+            allJobs.push({id: docSnap.id, data: docSnap.data()});
+        });
+        updateCounts();
+        switchTab(currentTab);
+    }
+
+    window.searchJobs = () => {
+        switchTab(currentTab);
+    }
+
+    window.adminLogin = () => {
+        if(isAdmin) {
+            isAdmin = false;
+            document.getElementById('loginBtn').innerText = "🔐 Admin Login";
+            document.getElementById('addBtn').style.display = 'none';
+            loadJobs();
+            alert("Logout हो गए");
+            return;
+        }
+        const pass = prompt("🔐 Admin Password डालें:");
+        if (pass === ADMIN_PASSWORD) {
+            isAdmin = true;
+            document.getElementById('loginBtn').innerText = "🚪 Logout";
+            document.getElementById('addBtn').style.display = 'block';
+            loadJobs();
+            alert("✅ Login Success! अब + बटन से Post कर सकते हो");
+        } else if (pass !== null) {
+            alert("❌ गलत Password!");
+        }
+    }
+
+    window.openModal = () => {
+        if(!isAdmin) return alert("पहले Admin Login करो");
+        document.getElementById('modalTitle').innerText = "नई नौकरी पोस्ट करें";
+        document.getElementById('editId').value = "";
+        document.getElementById('jobModal').style.display = 'block';
+    }
+
+    window.closeModal = () => {
+        document.getElementById('jobModal').style.display = 'none';
+        ['jobTitle','company','location','salary','contact','jobLink','jobImage'].forEach(id => document.getElementById(id).value = "");
+        document.getElementById('imgPreview').style.display = 'none';
+    }
+
+    window.previewImage = () => {
+        const url = document.getElementById('jobImage').value;
+        const img = document.getElementById('imgPreview');
+        if(url) { img.src = url; img.style.display = 'block'; } 
+        else { img.style.display = 'none'; }
+    }
+
+    window.saveJob = async () => {
+        const job = {
+            title: document.getElementById('jobTitle').value,
+            company: document.getElementById('company').value,
+            location: document.getElementById('location').value,
+            salary: document.getElementById('salary').value,
+            jobType: document.getElementById('jobType').value,
+            contact: document.getElementById('contact').value,
+            jobLink: document.getElementById('jobLink').value,
+            image: document.getElementById('jobImage').value,
+            time: Date.now()
+        };
+        
+        if (!job.title || !job.company) {
+            alert("⚠️ नौकरी का नाम और कंपनी जरूरी है");
+            return;
+        }
+
+        const editId = document.getElementById('editId').value;
+        if (editId) {
+            await updateDoc(doc(db, "jobs", editId), job);
+            alert("✅ नौकरी Update हो गई!");
+        } else {
+            await addDoc(collection(db, "jobs"), job);
+            alert("✅ नौकरी सफलतापूर्वक पोस्ट हो गई!");
+        }
+        closeModal();
+        loadJobs();
+    }
+
+    window.deleteJob = async (id) => {
+        if(!isAdmin) return alert("पहले Admin Login करो");
+        if (confirm("⚠️ पक्का Delete करना है?")) {
+            await deleteDoc(doc(db, "jobs", id));
+            alert("🗑️ Delete हो गई!");
+            loadJobs();
+        }
+    }
+
+    window.editJob = async (id) => {
+        if(!isAdmin) return alert("पहले Admin Login करो");
+        const docSnap = await getDoc(doc(db, "jobs", id));
+        const job = docSnap.data();
+        document.getElementById('modalTitle').innerText = "नौकरी Edit करें";
+        document.getElementById('editId').value = id;
+        document.getElementById('jobTitle').value = job.title;
+        document.getElementById('company').value = job.company;
+        document.getElementById('location').value = job.location;
+        document.getElementById('salary').value = job.salary;
+        document.getElementById('jobType').value = job.jobType;
+        document.getElementById('contact').value = job.contact;
+        document.getElementById('jobLink').value = job.jobLink || "";
+        document.getElementById('jobImage').value = job.image || "";
+        previewImage();
+        document.getElementById('jobModal').style.display = 'block';
+    }
+
+    window.shareWhatsApp = (title, company, location, salary) => {
+        const text = `🔥 *Palamu Job Alert* 🔥\n\n*Post:* ${title}\n*Company:* ${company}\n📍 *Location:* ${location}\n💰 *Salary:* ${salary}\n\n👉 *और नौकरी के लिए देखें:* ${window.location.href}\n\n_Palamu Jobs Portal - पलामू का नंबर 1 जॉब पोर्टल_`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    loadJobs();
+</script>
+</body>
+</html>
